@@ -13,7 +13,17 @@ from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
 from django.shortcuts import render, redirect
-from .forms import BookingForm,MenuForm
+from .forms import BookingForm,MenuForm,RegisterForm
+from django.views.generic import TemplateView
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
+from django.contrib.auth.models import Group
+from django.contrib import messages
+from django.views.generic.edit import FormView
+
+
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -94,3 +104,23 @@ class CreateBookingView(View):
             form.save()
             return redirect('booking-list')
         return render(request, self.template_name, {'form': form})
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
+class RegisterView(FormView):
+    form_class = RegisterForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        group = Group.objects.get(name='Customers')
+        user = form.save()
+        user.groups.add(group)
+        return response
+
+class MenuItemsView(View):
+    def get(self, request):
+        menu_items = Menu.objects.all()
+        return render(request, 'menu.html', {'menu_items': menu_items})

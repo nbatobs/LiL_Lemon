@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1>Menu</h1>
+    <div id="menu-container"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        url: '{% url "menu-list" %}', // URL for your API endpoint
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          var menuItems = '';
+          $.each(data, function(index, item) {
+            menuItems += '<div>' + item.name + ' - ' + item.price + '</div>';
+          });
+          $('#menu-container').html(menuItems);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log('Error:', textStatus, errorThrown);
+        }
+      });
+    });
+  </script>
+{% endblock %}

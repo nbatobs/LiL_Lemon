@@ -25,5 +25,6 @@ urlpatterns = [
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("admin/",admin.site.urls),
-    path('api/',include('Lil_LemonApp.urls')),
+    path('api/',include('Lil_LemonApp.api_urls')),
+    path('form/',include('Lil_LemonApp.forms_urls')),
 ]
